@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  <style>
+    .hero {
+      background-color: navy;
+      position: relative;
+    }
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-logo img {
+      max-height: 60px;
+    }
+    .title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+    .subtitle {
+      font-weight: bold;
+      color: navy;
+    }
+    hr {
+      border: 1px solid navy;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    #message {
+      display: none;
+      margin: 20px;
+      font-weight: bold;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    .success-message {
+      color: green;
+      background-color: beige;
+      border-color: aquamarine;
+    }
+    .error-message {
+      color: white;
+      background-color: red;
+    }
+    .back-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 12px;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: navy;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      .select select {
+        font-size: 14px;
+      }
+    }
+
+/* Styles for the loading indicator */
+#loading-indicator {
+     display: flex; /*Use flexbox for centering */
+     justify-content: center; /* Center horizontally */
+     align-items: center; /* Center vertically */
+     position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+      z-index: 1000; 
+      justify-content: center;
+      align-items: center; 
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite; 
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <title>Discrepancies Tracker</title>
+</head>
+
+<body>
+    
+    <div id="loading-indicator" style="display: none;" >
+        <div class="loading-spinner"></div>
+      </div>
+
+  <section class="hero is-bold">
+    <a href="#" class="back-button" onclick="goBack()">Back</a>
+    <div class="hero-body">
+      <div class="container header-container">
+        <h1 class="title">Discrepancies Tracker</h1>
+        <div class="header-logo">
+          <img src="inmark_logo.webp" alt="Inmark Logo" style="max-height: 120px;" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <form id="discrepancies-form" class="box" onsubmit="handleSubmit(event)">
+        <div class="field">
+          <label class="label">M. HANDLER</label>
+          <div class="control">
+            <div class="select">
+              <select id="pulled-handler" name="M. HANDLER" required> 
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+            <label class="label">DATE AND TIME</label>
+            <div class="control">
+              <input class="input" type="datetime-local" name="DATE AND TIME" id="date-time" required />
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">FG P#</label>
+            <div class="control">
+              <input class="input" type="text" name="FG P#" id="fg-part-number" placeholder="FG Part #" required />
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">JOB/ORDER #</label>
+            <div class="control">
+              <input class="input" type="text" name="JOB/ORDER #" id="job-number" placeholder="Job/Order #" required/>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">R. MATERIAL PART #</label>
+            <div class="control">
+              <input class="input" type="text" name="R. MATERIAL PART #" placeholder="Raw Material Part #" required/>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">SYSTEM QTY</label>
+            <div class="control">
+              <input class="input" type="number" name="SYSTEM QTY" id="system-qty" placeholder="System Quantity" required/>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">QTY NEEDED</label>
+            <div class="control">
+              <input class="input" type="number" name="QTY NEEDED" id="system-qty" placeholder="Quantity Needed" required/>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">PHYSICALLY QTY</label>
+            <div class="control">
+              <input class="input" type="number" name="PHYSICALLY QTY" id="physically-qty" placeholder="Physically Counted" required/>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">BIN</label>
+            <div class="control">
+              <input class="input" type="text" name="BIN" placeholder="Bin" required/>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">IMPACT</label>
+            <div class="control">
+              <div class="select">
+                <select name="IMPACT" required>
+                  <option value="">Select impact</option>
+                  <option value="Sales Order placed on Hold">Sales Order placed on Hold</option>
+                  <option value="Production Job placed on Hold">Production Job placed on Hold</option>
+                  <option value="No sales Order placed on hold">No sales Order placed on hold</option>
+                  <option value="No job production placed on hold">No job production placed on hold</option>
+                </select>
+              </div>
+            </div>
+          </div>
+  
+          <div class="field">
+            <label class="label">COMMENT</label>
+            <div class="control">
+              <textarea class="textarea" name="COMMENT" placeholder="Comment"></textarea>
+            </div>
+          </div>
+  
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" type="submit" id="submit-button">Submit</button>
+            </div>
+          </div>
+        </form>
+    </div>
+  </section>
+
+  <div id="message"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const userHandlerName = urlParams.get('handler');
+
+      const pulledHandlerSelect = document.getElementById('pulled-handler');
+
+      const handlerOptions = {
+        "Edelman": "Edelman",
+        "Angel": "Angel",
+        "Aroldo": "Aroldo",
+        "Marquiz": "Marquiz",
+        "Alejandro": "Alejandro",
+        "Joseph": "Joseph",
+        "Juan": "Juan",
+        "Terrance": "Terrance",
+        "Jhonatan": "Jhonatan",
+        "Fredy": "Fredy",
+        "Valeria": "Valeria",
+        "Don Carlos": "Don Carlos",
+        "Noemi": "Noemi",
+        "Fabian": "Fabian"
+      };
+
+      if (userHandlerName === "Noemi") {
+        // If Noemi, populate with all options
+        for (let key in handlerOptions) {
+          let option = document.createElement('option');
+          option.value = key;
+          option.textContent = handlerOptions[key];
+          pulledHandlerSelect.appendChild(option);
+        }
+      } else if (userHandlerName in handlerOptions) {
+        // If another valid handler, add only their name
+        let option = document.createElement('option');
+        option.value = userHandlerName;
+        option.textContent = handlerOptions[userHandlerName];
+        pulledHandlerSelect.appendChild(option);
+      } else {
+        // Handle cases where the handler is not found (optional)
+        let option = document.createElement('option');
+        option.value = "";
+        option.textContent = "Handler not found";
+        pulledHandlerSelect.appendChild(option);
+        console.error("Handler not found in the list:", userHandlerName);
+      }
+
+      // Set DATE AND TIME field to current date and time
+      const dateTimeInput = document.getElementById('date-time');
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const day = now.getDate().toString().padStart(2, '0');
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+      dateTimeInput.value = formattedDateTime;
+    });
+
+    async function handleSubmit(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Show loading indicator
+        document.getElementById('loading-indicator').style.display = 'flex';
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      // Convert FormData to URLSearchParams (for easier sending)
+      const formDataString = new URLSearchParams(formData).toString();
+      console.log("Form data before sending:", formDataString);
+
+      try {
+        const response = await fetch(
+          "https://script.google.com/macros/s/AKfycbxqVDmbGlhtB3odOxh1YodUVEUUYldkac4pdndTBeGLTtawoC1jXRqeSHLY-D1iB7co/exec", // **REPLACE WITH YOUR GOOGLE SCRIPT URL**
+          {
+            method: "POST",
+            body: formDataString,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" 
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok, status: ${response.status}`);
+        }
+        const result = await response.text();
+        if (result !== "Success") {
+          throw new Error("Failed to submit the form. Server response: " + result);
+        }
+
+        form.reset(); 
+        showMessage("Data submitted successfully!", 'success-message');
+      } catch (error) {
+        console.error("Error occurred:", error.message);
+        showMessage("An error occurred: " + error.message, 'error-message');
+      } finally {
+        // Hide loading indicator after the request is complete (success or error)
+        document.getElementById('loading-indicator').style.display = 'none'; 
+      }
+    }
+
+    function showMessage(message, messageClass) {
+      const messageDiv = document.getElementById("message");
+      messageDiv.textContent = message;
+      messageDiv.className = messageClass;
+      messageDiv.style.display = "block";
+      setTimeout(() => {
+        messageDiv.style.display = "none"; 
+      }, 3000); 
+    }
+
+    function goBack() {
+      window.history.back(); 
+    }
+  </script>
+</body>
+</html>
