@@ -59,9 +59,11 @@
                             <select id="report-type" name="report-type" required>
                                 <option value="" disabled selected>Select report type</option>
                                 <!-- <option value="job-related-extra">Job-related bin move for pulling extra</option> -->
-                                <!-- <option value="job-related-remainder">Job-related bin move for putting back remainder</option> -->
-                                <option value="general">Bin Move Report</option>
+                                <option value="discrepancy-search">Discrepancy-search</option>
                                 <option value="discrepancies">Discrepancy Report</option>
+                                <option value="bin-move-search">Bin Move-search</option>
+                                <option value="general">Bin Move Report</option>
+
                                 <!-- <option value="general-fg-putting-away">General FG or Prepack Bin Move</option> -->
 
                             </select>
@@ -94,9 +96,9 @@
                     // case 'job-related-extra':
                     //     targetUrl = 'job-related-extra.html';
                     //     break;
-                    // case 'job-related-remainder':
-                    //     targetUrl = 'job-related-remainder.html';
-                    //     break;
+                    case 'discrepancy-search':
+                        targetUrl = 'discrepancy-search.html';
+                        break;
                     case 'general':
                         targetUrl = 'general-bin-move.html';
                         break;
@@ -104,7 +106,10 @@
                         targetUrl = 'general-fg-putting-away.html';
                         break;
                     case 'discrepancies':
-                        targetUrl = 'discrepancies-tracker.html';
+                        targetUrl = 'discrepancies-report.html';
+                        break;
+                    case 'bin-move-search':
+                        targetUrl = 'bin-moves-search.html';
                         break;
                     default:
                         alert('Please select a report type.');
