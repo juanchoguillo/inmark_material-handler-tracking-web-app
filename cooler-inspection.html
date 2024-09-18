@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report PDF</title>
+  <!-- Include Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  <!-- Include jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Include jsPDF Autotable plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <!-- Include the company logo as a Data URL -->
+  <script>
+  // Replace with your actual logo encoded as a base64 data URL
+  
+  var companyLogo = 'data:image/webp;base64,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'; // Add your logo's data URL here
+  </script>
+  <style>
+    /* Your existing styles */
+    .hero {
+      background-color: navy;
+      position: relative;
+    }
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-logo img {
+      max-height: 60px;
+    }
+    .title {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+    .subtitle {
+      font-weight: bold;
+      color: navy;
+    }
+    hr {
+      border: 1px solid navy;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    #message {
+      display: none;
+      margin: 20px;
+      font-weight: bold;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    .success-message {
+      color: green;
+      background-color: beige;
+      border-color: aquamarine;
+    }
+    .error-message {
+      color: white;
+      background-color: red;
+    }
+    .back-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: navy;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      .select select {
+        font-size: 14px;
+      }
+    }
+    /* Styles for the loading indicator */
+    #loading-indicator {
+      display: flex; /*Use flexbox for centering */
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+      z-index: 1000;
+      justify-content: center;
+      align-items: center; 
+    }
+    .loading-spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite; 
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .add-button-container {
+      padding: 20px 0;
+    }
+    /* Styles for Webcam Elements */
+    #videoElement {
+      width: 320px;
+      height: 240px;
+      background-color: #666;
+      margin-bottom: 10px;
+      display: none;
+    }
+    #canvasElement {
+      display: none;
+    }
+    .capturedImage {
+      width: 100px;
+      height: 75px;
+      border: 1px solid #ddd;
+      margin: 5px;
+    }
+    .captured-images {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loading-indicator" style="display: none;">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <section class="hero is-bold">
+    <a href="#" class="back-button" onclick="goBack()">Back</a>
+    <div class="hero-body">
+      <div class="container header-container">
+        <h1 class="title">Supplier Incoming Cooler Inspection</h1>
+        <div class="header-logo">
+          <img src="inmark_logo.webp" alt="Inmark Logo" style="max-height: 120px;" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <form id="cooler-inspection-form" class="box" onsubmit="handleSubmit(event)">
+        <!-- Date Field -->
+        <div class="field">
+          <label class="label">Date *</label>
+          <div class="control">
+            <input class="input" type="date" name="Date" id="date" required />
+          </div>
+        </div>
+
+        <!-- Radio Button Fields for Yes/No -->
+        <div class="field">
+            <label class="label">Did the truck arrive after cutoff time of 1PM?</label>
+            <div class="control">
+              <label class="radio">
+                <input type="radio" name="Truck_Arrival_After_1PM" value="Yes">
+                Yes
+              </label>
+              <label class="radio">
+                <input type="radio" name="Truck_Arrival_After_1PM" value="No">
+                No
+              </label>
+            </div>
+          </div>
+
+        <!-- Time Truck Arrived -->
+        <div class="field">
+          <label class="label">Time Truck Arrived *</label>
+          <div class="control">
+            <input class="input" type="time" name="Time_Truck_Arrived" id="time_truck_arrived" required />
+          </div>
+        </div>
+
+        <!-- Time Truck Ready -->
+        <div class="field">
+          <label class="label">Time Truck Departured *</label>
+          <div class="control">
+            <input class="input" type="time" name="Time_Truck_Ready" id="time_truck_ready" required />
+          </div>
+        </div>
+
+        <!-- Total Field -->
+        <div class="field">
+          <label class="label">Total Truck Time </label>
+          <div class="control">
+            <input class="input" type="text" name="Total" id="total" readonly /> 
+          </div>
+        </div>
+
+        <!-- Supplier Field -->
+        <div class="field">
+          <label class="label">Supplier *</label>
+          <div class="control">
+            <div class="select">
+              <select name="Supplier" required>
+                <option value="">Please Select</option>
+                <option value="Supplier 1">Supplier 1</option>
+                <option value="Supplier 2">Supplier 2</option>
+                <option value="Supplier 3">Supplier 3</option>
+                <!-- Add more suppliers as needed -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Registration -->
+        <!-- <div class="field">
+          <label class="label">Registration of vehicle being inspected</label>
+          <div class="control">
+            <input class="input" type="text" name="Vehicle_Registration" placeholder="Registration" /> 
+          </div>
+        </div> -->
+
+        <!-- PO Number -->
+        <div class="field">
+          <label class="label">PO Number *</label>
+          <div class="control">
+            <input class="input" type="text" name="PO_Number" placeholder="PO Number" required /> 
+          </div>
+        </div>
+
+        <!-- Part Number -->
+        <div class="field">
+          <label class="label">Part Number *</label>
+          <div class="control">
+            <input class="input" type="text" name="Part_Number" placeholder="Part Number" required /> 
+          </div>
+        </div>
+
+               <!-- Radio Buttons for Additional Yes/No Questions -->
+               <div class="field">
+                <label class="label">Does the product description match the Bill of Lading?</label>
+                <div class="control">
+                  <label class="radio">
+                    <input type="radio" name="Description_Match" value="Yes">
+                    Yes
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="Description_Match" value="No">
+                    No
+                  </label>
+                </div>
+              </div>
+      
+              <div class="field">
+                <label class="label">Does the quantity match the Bill of Lading?</label>
+                <div class="control">
+                  <label class="radio">
+                    <input type="radio" name="Quantity_Match" value="Yes">
+                    Yes
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="Quantity_Match" value="No">
+                    No
+                  </label>
+                </div>
+              </div>
+      
+              <div class="field">
+                <label class="label">Is there visible structural damage?</label>
+                <div class="control">
+                  <label class="radio">
+                    <input type="radio" name="Structural_Damage" value="Yes">
+                    Yes
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="Structural_Damage" value="No">
+                    No
+                  </label>
+                </div>
+              </div>
+      
+              <div class="field">
+                <label class="label">Is there any contamination visible?</label>
+                <div class="control">
+                  <label class="radio">
+                    <input type="radio" name="Contamination" value="Yes">
+                    Yes
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="Contamination" value="No">
+                    No
+                  </label>
+                </div>
+              </div>
+      
+              <div class="field">
+                <label class="label">Are there any defective coolers?</label>
+                <div class="control">
+                  <label class="radio">
+                    <input type="radio" name="Defective_Coolers" value="Yes">
+                    Yes
+                  </label>
+                  <label class="radio">
+                    <input type="radio" name="Defective_Coolers" value="No">
+                    No
+                  </label>
+                </div>
+              </div>
+
+        <!-- Name Fields -->
+        <div class="field">
+          <label class="label">Name *</label>
+          <div class="control">
+            <div class="columns">
+              <div class="column is-one-half">
+                <input class="input" type="text" name="First_Name" placeholder="First Name" required />
+              </div>
+              <div class="column is-one-half">
+                <input class="input" type="text" name="Last_Name" placeholder="Last Name" required />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Webcam Interaction -->
+        <div class="field">
+          <label class="label">Webcam</label>
+          <div class="control">
+            <button type="button" id="startWebcam" class="button is-link">Start Webcam</button>
+            <video autoplay="true" id="videoElement"></video>
+          </div>
+        </div>
+
+        <!-- Hidden Canvas Element for Capturing Image -->
+        <canvas id="canvasElement"></canvas>
+
+        <!-- Take Photo (Pallets/Material Upon Arrival) -->
+        <div class="field">
+          <label class="label">Take Photo (Pallets/Material Upon Arrival) *</label>
+          <div class="control">
+            <!-- Button to Take a Picture -->
+            <button type="button" id="takePicture1" class="button is-link">Capture Image</button>
+            <!-- Display Captured Images -->
+            <div id="capturedImages1" class="captured-images"></div>
+          </div>
+        </div>
+
+        <!-- Take Photo (Defects) -->
+        <div class="field">
+          <label class="label">Take Photo (Defects) *</label>
+          <div class="control">
+            <!-- Button to Take a Picture -->
+            <button type="button" id="takePicture2" class="button is-link">Capture Image</button>
+            <!-- Display Captured Images -->
+            <div id="capturedImages2" class="captured-images"></div>
+          </div>
+        </div>
+
+        <!-- Form Submission Buttons -->
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-primary" type="submit" id="submit-button">Submit</button>
+          </div>
+          <div class="control">
+            <button class="button is-link" type="button" id="save-button" onclick="generatePDF()">Save as PDF</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div id="message"></div>
+
+  <script>
+    // Access the Webcam
+    var video = document.querySelector("#videoElement");
+    var canvas = document.getElementById('canvasElement');
+    var context = canvas.getContext('2d');
+    var imagesArrival = [];
+    var imagesDefects = [];
+
+    // Start Webcam Function
+    document.getElementById('startWebcam').addEventListener('click', function () {
+      // Request Access to Webcam
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+            video.style.display = 'block';
+          })
+          .catch(function (error) {
+            console.log("Something went wrong!", error);
+          });
+      }
+    });
+
+    // Event Listener for 'Take Picture' Buttons
+    document.getElementById('takePicture1').addEventListener('click', function () {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      var dataURL = canvas.toDataURL('image/png');
+      imagesArrival.push(dataURL);
+
+      // Display the captured image
+      var img = document.createElement('img');
+      img.src = dataURL;
+      img.className = 'capturedImage';
+      document.getElementById('capturedImages1').appendChild(img);
+    });
+
+    document.getElementById('takePicture2').addEventListener('click', function () {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      var dataURL = canvas.toDataURL('image/png');
+      imagesDefects.push(dataURL);
+
+      // Display the captured image
+      var img = document.createElement('img');
+      img.src = dataURL;
+      img.className = 'capturedImage';
+      document.getElementById('capturedImages2').appendChild(img);
+    });
+
+    // Calculate Total Time
+    function calculateTotalTime() {
+      var timeArrived = document.getElementById('time_truck_arrived').value;
+      var timeReady = document.getElementById('time_truck_ready').value;
+
+      if (timeArrived && timeReady) {
+        // Parse times
+        var t1 = timeArrived.split(':');
+        var t2 = timeReady.split(':');
+
+        var date1 = new Date();
+        date1.setHours(parseInt(t1[0]), parseInt(t1[1]), 0, 0);
+        var date2 = new Date();
+        date2.setHours(parseInt(t2[0]), parseInt(t2[1]), 0, 0);
+
+        // Calculate difference in milliseconds
+        var diff = date2 - date1;
+
+        if (diff < 0) {
+          // If negative, assume timeReady is on the next day
+          diff += 24 * 60 * 60 * 1000;
+        }
+
+        // Convert milliseconds to hours and minutes
+        var diffHours = Math.floor(diff / (1000 * 60 * 60));
+        var diffMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+        // Display total time
+        document.getElementById('total').value = diffHours + " hours " + diffMinutes + " minutes";
+      } else {
+        document.getElementById('total').value = "";
+      }
+    }
+
+    // Add event listeners
+    document.getElementById('time_truck_arrived').addEventListener('change', calculateTotalTime);
+    document.getElementById('time_truck_ready').addEventListener('change', calculateTotalTime);
+
+    // Generate PDF Function
+    function generatePDF() {
+      // Get Form Data
+      var form = document.getElementById('cooler-inspection-form');
+      var formData = new FormData(form);
+
+      // Extract values from formData
+      var date = formData.get('Date');
+      var truckArrivalAfter1PM = formData.get('Truck_Arrival_After_1PM') ? 'Yes' : 'No';
+      var timeTruckArrived = formData.get('Time_Truck_Arrived');
+      var timeTruckReady = formData.get('Time_Truck_Ready');
+      var total = formData.get('Total');
+      var supplier = formData.get('Supplier');
+    //   var vehicleRegistration = formData.get('Vehicle_Registration');
+      var poNumber = formData.get('PO_Number');
+      var partNumber = formData.get('Part_Number');
+      var descriptionMatch = formData.get('Description_Match') ? 'Yes' : 'No';
+      var quantityMatch = formData.get('Quantity_Match') ? 'Yes' : 'No';
+      var structuralDamage = formData.get('Structural_Damage') ? 'Yes' : 'No';
+      var contamination = formData.get('Contamination') ? 'Yes' : 'No';
+      var defectiveCoolers = formData.get('Defective_Coolers') ? 'Yes' : 'No';
+      var defectiveCoolerCount = formData.get('Defective_Cooler_Count');
+      var firstName = formData.get('First_Name');
+      var lastName = formData.get('Last_Name');
+
+      // Create a New jsPDF Instance
+      var { jsPDF } = window.jspdf;
+      var doc = new jsPDF();
+
+      // Add Company Logo
+      if (companyLogo) {
+        doc.addImage(companyLogo, 'PNG', 10, 10, 50, 15);
+      }
+
+      // Set Title
+      var reportTitle = 'Inspection Form - P#: ' + partNumber + ', PO: ' + poNumber;
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text(reportTitle, 70, 20);
+
+      // Prepare data for autoTable
+      var reportData = [
+        [{ content: 'Field', styles: { halign: 'left', fontStyle: 'bold' } }, { content: 'Value', styles: { halign: 'left', fontStyle: 'bold' } }],
+        ['Date:', date],
+        ['Did the truck arrive after cutoff time of 1PM?:', truckArrivalAfter1PM],
+        ['Time Truck Arrived:', timeTruckArrived],
+        ['Time Truck Ready:', timeTruckReady],
+        ['Total:', total],
+        ['Supplier:', supplier],
+        // ['Vehicle Registration:', vehicleRegistration],
+        ['PO Number:', poNumber],
+        ['Part Number:', partNumber],
+        ['Product Description Matches?:', descriptionMatch],
+        ['Quantity Delivered Matches?:', quantityMatch],
+        ['Visible Structural Damage?:', structuralDamage],
+        ['Excessive Moisture or Contaminants?:', contamination],
+        ['Defective and Unusable Coolers?:', defectiveCoolers],
+        ['Number of Defective Coolers:', defectiveCoolerCount],
+        ['Name:', firstName + ' ' + lastName]
+      ];
+
+      // Add autoTable
+      doc.autoTable({
+        startY: 30,
+        head: [reportData[0]],
+        body: reportData.slice(1),
+        theme: 'grid',
+        styles: { fontSize: 11 },
+        headStyles: { fillColor: [41, 128, 185] }, // Navy color
+        alternateRowStyles: { fillColor: [245, 245, 245] }
+      });
+
+      // Add images for "Pallets/Material Upon Arrival" and "Defects" on one page if possible
+      var images = [];
+      if (imagesArrival.length > 0) {
+        images.push({ title: 'Photos (Pallets/Material Upon Arrival):', images: imagesArrival });
+      }
+      if (imagesDefects.length > 0) {
+        images.push({ title: 'Photos (Defects):', images: imagesDefects });
+      }
+
+      if (images.length > 0) {
+        doc.addPage();
+        var y = 10;
+        for (var idx = 0; idx < images.length; idx++) {
+          doc.setFontSize(14);
+          doc.setFont('helvetica', 'bold');
+          doc.text(images[idx].title, 10, y);
+          y += 10;
+
+          var x = 10;
+          var imgWidth = 60, imgHeight = 45;
+          var imagesPerRow = 3;
+          var count = 0;
+
+          for (var i = 0; i < images[idx].images.length; i++) {
+            doc.addImage(images[idx].images[i], 'PNG', x, y, imgWidth, imgHeight);
+            x += imgWidth + 5;
+            count++;
+            if (count % imagesPerRow == 0) {
+              x = 10;
+              y += imgHeight + 5;
+            }
+            // Check if we need to add a new page
+            if (y + imgHeight > 280) {
+              doc.addPage();
+              y = 10;
+            }
+          }
+          y += imgHeight + 10;
+          x = 10;
+        }
+      }
+
+      // Save the PDF with PO Number as the filename
+      var fileName = poNumber ? poNumber + '.pdf' : 'report.pdf';
+      doc.save(fileName);
+    }
+  </script>
+</body>
+</html>
